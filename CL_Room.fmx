@@ -1,0 +1,75 @@
+object ClassRoom: TClassRoom
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 592
+  ClientWidth = 916
+  Position = MainFormCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object plyScr_Ly: TLayout
+    Align = Client
+    Size.Width = 916.000000000000000000
+    Size.Height = 416.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    object Button1: TButton
+      StyledSettings = [Family, Style]
+      Position.X = 416.000000000000000000
+      Position.Y = 184.000000000000000000
+      Size.Width = 57.000000000000000000
+      Size.Height = 57.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = 'X'
+      TextSettings.Font.Size = 18.000000000000000000
+      TextSettings.FontColor = claRed
+      TextSettings.Trimming = None
+      OnClick = Button1Click
+    end
+  end
+  object Bttn_ly: TLayout
+    Align = Bottom
+    Position.Y = 416.000000000000000000
+    Size.Width = 916.000000000000000000
+    Size.Height = 176.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    object Rectangle1: TRectangle
+      Position.X = 32.000000000000000000
+      Position.Y = 64.000000000000000000
+      Size.Width = 50.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      OnClick = Rectangle1Click
+    end
+    object Rectangle2: TRectangle
+      Position.X = 106.000000000000000000
+      Position.Y = 8.000000000000000000
+      Size.Width = 50.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      OnClick = Rectangle2Click
+    end
+    object Rectangle3: TRectangle
+      Position.X = 176.000000000000000000
+      Position.Y = 64.000000000000000000
+      Size.Width = 50.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      OnClick = Rectangle3Click
+    end
+    object Rectangle4: TRectangle
+      Position.X = 106.000000000000000000
+      Position.Y = 94.000000000000000000
+      Size.Width = 50.000000000000000000
+      Size.Height = 50.000000000000000000
+      Size.PlatformDefault = False
+      OnClick = Rectangle4Click
+    end
+  end
+end

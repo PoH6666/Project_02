@@ -1,0 +1,25 @@
+inherited Form3_LgXhdpiPh: TForm3_LgXhdpiPh
+  ClientHeight = 696
+  ClientWidth = 448
+  DesignerMasterStyle = 0
+  inherited Layout4: TLayout
+    Size.Width = 448.000000000000000000
+    Size.Height = 696.000000000000000000
+    inherited Layout3: TLayout
+      Size.Width = 448.000000000000000000
+      Size.Height = 696.000000000000000000
+      inherited Layout1: TLayout
+        Size.Width = 448.000000000000000000
+        Size.Height = 564.000000000000000000
+      end
+      inherited Layout2: TLayout
+        Position.Y = 564.000000000000000000
+        Size.Width = 448.000000000000000000
+      end
+    end
+    inherited Rectangle7: TRectangle
+      Size.Width = 448.000000000000000000
+      Size.Height = 696.000000000000000000
+    end
+  end
+end

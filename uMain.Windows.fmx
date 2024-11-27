@@ -1,0 +1,4 @@
+inherited Form3_Windows: TForm3_Windows
+  WindowState = wsNormal
+  DesignerMasterStyle = 0
+end
