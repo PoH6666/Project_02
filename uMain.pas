@@ -83,8 +83,8 @@ interface
     end;
 
   var
-    frmMain  : TfrmMain;
-    gameover : Boolean;
+    frmMain    : TfrmMain;
+    IsGameOver : Boolean;
 
 implementation
 
@@ -136,12 +136,12 @@ implementation
 
       GameGrid           := TGameGrid.Create( lyRoom, 18, 36, 30 ); // 10 rows, 10 columns, tile size of 50x50
       Rectangle7.Visible := false;
-      gameover           := false;
+      IsGameOver         := false;
     end;
 
   procedure TfrmMain.FormCreate( Sender : TObject );
     begin
-      gameover      := True;
+      IsGameOver    := True;
       MyCharacter.X := 16;
       MyCharacter.Y := 15;
 
@@ -253,7 +253,7 @@ implementation
 
   procedure TfrmMain.recQuitClick( Sender : TObject );
     begin
-      gameover := True;
+      IsGameOver := True;
     end;
 
   procedure TfrmMain.recRightClick( Sender : TObject );
@@ -299,60 +299,62 @@ implementation
 
   procedure TfrmMain.ShowGameGrid;
     begin
-      if not gameover
+      if IsGameOver
       then
         begin
-          // Place walls in the four corners
-          if Assigned( GameGrid )
-          then
+          Exit
+        end;
+
+      // Place walls in the four corners
+      if Assigned( GameGrid )
+      then
+        begin
+          with GameGrid do
             begin
-              with GameGrid do
-                begin
-                  UpdateTileType( 6, 4, 'Door' );
-                  UpdateTileType( 6, 5, 'Door' );
-                  UpdateTileType( 2, 2, 'Wall' );
-                  UpdateTileType( 2, 3, 'Wall' );
-                  UpdateTileType( 2, 4, 'Wall' );
-                  UpdateTileType( 2, 5, 'Wall' );
-                  UpdateTileType( 2, 6, 'Wall' );
-                  UpdateTileType( 5, 4, 'Wall' );
-                  UpdateTileType( 5, 5, 'Wall' );
-                  UpdateTileType( 3, 2, 'Wall' );
-                  UpdateTileType( 3, 6, 'Wall' );
-                  UpdateTileType( 4, 6, 'Wall' );
-                  UpdateTileType( 5, 6, 'Wall' );
-                  UpdateTileType( 4, 2, 'Wall' );
-                  UpdateTileType( 5, 2, 'Wall' );
-                  UpdateTileType( 6, 2, 'Wall' );
-                  UpdateTileType( 6, 3, 'Wall' );
-                  UpdateTileType( 6, 6, 'Wall' );
-                  UpdateTileType( 32, 1, 'Room' ); // Top-right corner
-                  UpdateTileType( 31, 1, 'Room' );
-                  UpdateTileType( 30, 1, 'Room' );
-                  UpdateTileType( 29, 1, 'Room' );
-                  UpdateTileType( 32, 2, 'Room' );
-                  UpdateTileType( 31, 2, 'Room' );
-                  UpdateTileType( 30, 2, 'Room' );
-                  UpdateTileType( 29, 2, 'Room' );
-                  UpdateTileType( 15, 9, 'Wall' );
-                  UpdateTileType( 16, 9, 'Wall' );
-                  UpdateTileType( 17, 9, 'Wall' );
-                  UpdateTileType( 32, 3, 'Room' );
-                  UpdateTileType( 31, 3, 'Room' );
-                  UpdateTileType( 30, 3, 'Room' );
-                  UpdateTileType( 29, 3, 'Door' );
-                  UpdateTileType( 32, 4, 'Room' );
-                  UpdateTileType( 31, 4, 'Room' );
-                  UpdateTileType( 30, 4, 'Room' );
-                  UpdateTileType( 29, 4, 'Room' );
-                  UpdateTileType( 32, 5, 'Room' );
-                  UpdateTileType( 31, 5, 'Room' );
-                  UpdateTileType( 30, 5, 'Room' );
-                  UpdateTileType( 29, 5, 'Room' );
-                  UpdateTileType( 13, 14, 'Wall' );
-                  UpdateTileType( 15, 14, 'Wall' );
-                  UpdateTileType( 12, 14, 'Wall' );
-                end;
+              UpdateTileType( 6, 4, 'Door' );
+              UpdateTileType( 6, 5, 'Door' );
+              UpdateTileType( 2, 2, 'Wall' );
+              UpdateTileType( 2, 3, 'Wall' );
+              UpdateTileType( 2, 4, 'Wall' );
+              UpdateTileType( 2, 5, 'Wall' );
+              UpdateTileType( 2, 6, 'Wall' );
+              UpdateTileType( 5, 4, 'Wall' );
+              UpdateTileType( 5, 5, 'Wall' );
+              UpdateTileType( 3, 2, 'Wall' );
+              UpdateTileType( 3, 6, 'Wall' );
+              UpdateTileType( 4, 6, 'Wall' );
+              UpdateTileType( 5, 6, 'Wall' );
+              UpdateTileType( 4, 2, 'Wall' );
+              UpdateTileType( 5, 2, 'Wall' );
+              UpdateTileType( 6, 2, 'Wall' );
+              UpdateTileType( 6, 3, 'Wall' );
+              UpdateTileType( 6, 6, 'Wall' );
+              UpdateTileType( 32, 1, 'Room' ); // Top-right corner
+              UpdateTileType( 31, 1, 'Room' );
+              UpdateTileType( 30, 1, 'Room' );
+              UpdateTileType( 29, 1, 'Room' );
+              UpdateTileType( 32, 2, 'Room' );
+              UpdateTileType( 31, 2, 'Room' );
+              UpdateTileType( 30, 2, 'Room' );
+              UpdateTileType( 29, 2, 'Room' );
+              UpdateTileType( 15, 9, 'Wall' );
+              UpdateTileType( 16, 9, 'Wall' );
+              UpdateTileType( 17, 9, 'Wall' );
+              UpdateTileType( 32, 3, 'Room' );
+              UpdateTileType( 31, 3, 'Room' );
+              UpdateTileType( 30, 3, 'Room' );
+              UpdateTileType( 29, 3, 'Door' );
+              UpdateTileType( 32, 4, 'Room' );
+              UpdateTileType( 31, 4, 'Room' );
+              UpdateTileType( 30, 4, 'Room' );
+              UpdateTileType( 29, 4, 'Room' );
+              UpdateTileType( 32, 5, 'Room' );
+              UpdateTileType( 31, 5, 'Room' );
+              UpdateTileType( 30, 5, 'Room' );
+              UpdateTileType( 29, 5, 'Room' );
+              UpdateTileType( 13, 14, 'Wall' );
+              UpdateTileType( 15, 14, 'Wall' );
+              UpdateTileType( 12, 14, 'Wall' );
             end;
         end;
     end;

@@ -13,16 +13,20 @@ interface
 
   type
     TPathNode = class
-      GCost, HCost, FCost : Integer; // A* costs
+      GCost : Integer;
+      HCost : Integer;
+      FCost : Integer; // A* costs
       Parent : TPathNode; // Pointer to parent node for path reconstruction
-      X, Y : Integer; // Position in the grid
+      X : Integer; // XPosition in the grid
+      Y : Integer; // Y Position in the grid
       constructor Create( AX, AY : Integer; AParent : TPathNode = nil );
     end;
 
     TPathfinding = class
       private
-        FGameGrid    : TGameGrid;
-        FRows, FCols : Integer; // Grid dimensions
+        FGameGrid : TGameGrid;
+        FRows     : Integer;
+        FCols     : Integer; // Grid dimensions
         function CalculateHCost( StartX, StartY, EndX, EndY : Integer ) : Integer;
         function GetNeighbors( Node : TPathNode ) : TList< TPathNode >;
         function IsWalkable( X, Y : Integer ) : Boolean;

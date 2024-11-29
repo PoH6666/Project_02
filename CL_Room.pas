@@ -79,7 +79,7 @@ end;
 
 Procedure TClassRoom.ShowGameGrid;
 begin
-  if not gameover then begin
+  if not IsGameOver then begin
 
     if Assigned (GameGrid)  then begin
       with GameGrid do begin
