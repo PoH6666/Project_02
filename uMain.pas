@@ -3,81 +3,81 @@ unit uMain;
 interface
 
   uses
+    // Windows Units
+    // Delphi Units
+    FMX.Controls,
+    FMX.Controls.Presentation,
+    FMX.Dialogs,
+    FMX.Forms,
+    FMX.Graphics,
+    FMX.Layouts,
+    FMX.Objects,
+    FMX.StdCtrls,
+    FMX.Types,
+    Pathfinding,
+    System.Classes,
+    System.Generics.Collections, // Include the unit for TGameGrid
     System.SysUtils,
     System.Types,
     System.UITypes,
-    System.Classes,
     System.Variants,
-    FMX.Types,
-    FMX.Controls,
-    FMX.Forms,
-    FMX.Graphics,
-    FMX.Dialogs,
-    uGameGrid,
-    Pathfinding,
-    FMX.Objects,
-    FMX.Layouts,
-    FMX.Controls.Presentation,
-    FMX.StdCtrls,
-    System.Generics.Collections; // Include the unit for TGameGrid
+    // SIVille Units
+    uGameGrid;
 
   type
 
     tchar = record
-      X, Y : integer;
+      X : integer;
+      Y : integer;
     end;
 
     TfrmMain = class( TForm )
-      Rectangle1 : TRectangle;
-      lyRoom : TLayout;
-      recQuit : TRectangle;
-      Timer1 : TTimer;
-      recUP : TRectangle;
-      recDown : TRectangle;
-      lyButtons : TLayout;
-      recRight : TRectangle;
-      recLeft : TRectangle;
       character : TBrushObject;
       Door : TBrushObject;
       Grass : TBrushObject;
-      Room : TBrushObject;
-      wall : TBrushObject;
-      water : TBrushObject;
-      Rectangle7 : TRectangle;
-      Rectangle8 : TRectangle;
-      lyBottom : TLayout;
       Label1 : TLabel;
       Label2 : TLabel;
-      Label4 : TLabel;
       Label3 : TLabel;
-      Rectangle2 : TRectangle;
+      Label4 : TLabel;
       lblFindPath : TLabel;
+      lyBottom : TLayout;
+      lyButtons : TLayout;
+      lyRoom : TLayout;
+      recDown : TRectangle;
+      recLeft : TRectangle;
+      recQuit : TRectangle;
+      recRight : TRectangle;
       recRoom_1 : TRectangle;
+      Rectangle1 : TRectangle;
+      Rectangle2 : TRectangle;
+      Rectangle7 : TRectangle;
+      Rectangle8 : TRectangle;
+      recUP : TRectangle;
+      Room : TBrushObject;
+      Timer1 : TTimer;
+      wall : TBrushObject;
+      water : TBrushObject;
       procedure FormCreate( Sender : TObject );
-      procedure Rectangle1Click( Sender : TObject );
-      procedure recQuitClick( Sender : TObject );
-      procedure recUPClick( Sender : TObject );
-      procedure recDownClick( Sender : TObject );
-      procedure recRightClick( Sender : TObject );
-      procedure recLeftClick( Sender : TObject );
-      procedure Rectangle8Click( Sender : TObject );
-      procedure lyPlayScreenClick( Sender : TObject );
       procedure lblFindPathClick( Sender : TObject );
-
+      procedure lyPlayScreenClick( Sender : TObject );
+      procedure recDownClick( Sender : TObject );
+      procedure recLeftClick( Sender : TObject );
+      procedure recQuitClick( Sender : TObject );
+      procedure recRightClick( Sender : TObject );
+      procedure Rectangle1Click( Sender : TObject );
+      procedure Rectangle8Click( Sender : TObject );
+      procedure recUPClick( Sender : TObject );
       private
         procedure CreateGameGrid;
-        procedure ShowRoom;
-        procedure ShowGameGrid;
         procedure ShowCharacter;
+        procedure ShowGameGrid;
         procedure ShowPathFound( lPath : tList< TPoint > );
-        { Private declarations }
-
+        procedure ShowRoom;
       public
-        { Public declarations }
         GameGrid        : TGameGrid; // Declare the TGameGrid object
-        Pathfinding     : TPathfinding;
-        MyCharacter     : tchar;
         IsClassRoomOpen : Boolean;
+        MyCharacter     : tchar;
+        Pathfinding     : TPathfinding;
         procedure CheckCollision;
         procedure MoveCharacterTo( TargetX, TargetY : integer );
     end;
@@ -91,6 +91,7 @@ implementation
   {$r *.fmx}
 
   uses
+    // SIVille Units
     CL_Room;
 
   procedure TfrmMain.CheckCollision;
@@ -125,6 +126,19 @@ implementation
         end;
     end;
 
+  procedure TfrmMain.CreateGameGrid;
+    begin
+      if Assigned( GameGrid )
+      then
+        begin
+          FreeAndNil( GameGrid ); // Destroy existing grid if already created
+        end;
+
+      GameGrid           := TGameGrid.Create( lyRoom, 18, 36, 30 ); // 10 rows, 10 columns, tile size of 50x50
+      Rectangle7.Visible := false;
+      gameover           := false;
+    end;
+
   procedure TfrmMain.FormCreate( Sender : TObject );
     begin
       gameover      := True;
@@ -135,26 +149,24 @@ implementation
 
       if Assigned( GameGrid )
       then
-        Pathfinding := TPathfinding.Create( GameGrid, 36, 18 ); // Columns, Rows
+        begin
+          Pathfinding := TPathfinding.Create( GameGrid, 36, 18 ); // Columns, Rows
+        end;
     end;
 
   procedure TfrmMain.lblFindPathClick( Sender : TObject );
     var
-      TargetX, TargetY : integer;
-      ClickPoint       : TPointF;
-
-      lResult : tList< TPoint >;
-
+      TargetX    : integer;
+      TargetY    : integer;
+      ClickPoint : TPointF;
+      lResult    : tList< TPoint >;
     begin
-
       // Door n 1 room n 1
       TargetX := 6;
       TargetY := 5;
-
       // starting point
       // MyCharacter X
       // MyCharacter  Y
-
       with TPathfinding.Create( GameGrid, GameGrid.Rows, GameGrid.Cols ) do
         try
           lResult := FindPath( MyCharacter.X, MyCharacter.Y, TargetX, TargetY );
@@ -164,40 +176,16 @@ implementation
             begin
               ShowPathFound( lResult );
             end;
-
         finally
           free;
         end;
     end;
 
-  procedure TfrmMain.ShowPathFound( lPath : tList< TPoint > );
-    var
-      i : integer;
-      p : TPoint;
-    begin
-
-      p := TPoint.Create( 0, 0 );
-
-      for i := 0 to lPath.Count - 1 do
-        begin
-          p.X := lPath[ i ].X;
-          p.Y := lPath[ i ].Y;
-          // Update character position
-          MyCharacter.X := p.X;
-          MyCharacter.Y := p.Y;
-
-          // Update the grid
-          GameGrid.UpdateTileType( MyCharacter.X, MyCharacter.Y, 'Character' );
-          Sleep( 100 ); // Optional delay for smooth animation
-          Application.ProcessMessages; // Ensure UI updates in real-time
-
-        end;
-    end;
-
   procedure TfrmMain.lyPlayScreenClick( Sender : TObject );
     var
-      TargetX, TargetY : integer;
-      ClickPoint       : TPointF;
+      TargetX    : integer;
+      TargetY    : integer;
+      ClickPoint : TPointF;
     begin
       showmessage( 'Enter play screen' );
       // Get the click position relative to lyRoom
@@ -223,7 +211,9 @@ implementation
     begin
       if not Assigned( Pathfinding )
       then
-        Exit;
+        begin
+          Exit;
+        end;
 
       Path := Pathfinding.FindPath( MyCharacter.X, MyCharacter.Y, TargetX, TargetY );
       try
@@ -243,26 +233,60 @@ implementation
       end;
     end;
 
-  procedure TfrmMain.ShowRoom;
+  procedure TfrmMain.recDownClick( Sender : TObject );
     begin
-      recRoom_1.Visible := false;
-      // Create a new rectangle to display in front of the grid
-      recRoom_1.Width      := 225; // Set width of rectangle
-      recRoom_1.Height     := 245; // Set height of rectangle
-      recRoom_1.Position.X := 88; // Set X position (adjust as needed)
-      recRoom_1.Position.Y := 110; // Set Y position (adjust as needed)
-      recRoom_1.BringToFront; // Bring rectangle to the front of all other controls
+      if GameGrid.GetTileType( MyCharacter.X, MyCharacter.Y + 1 ) <> 'Wall'
+      then
+        begin
+          MyCharacter.Y := MyCharacter.Y + 1;
+        end;
     end;
 
-  procedure TfrmMain.CreateGameGrid;
+  procedure TfrmMain.recLeftClick( Sender : TObject );
     begin
-      if Assigned( GameGrid )
+      if GameGrid.GetTileType( MyCharacter.X - 1, MyCharacter.Y ) <> 'Wall'
       then
-        FreeAndNil( GameGrid ); // Destroy existing grid if already created
+        begin
+          MyCharacter.X := MyCharacter.X - 1;
+        end;
+    end;
 
-      GameGrid           := TGameGrid.Create( lyRoom, 18, 36, 30 ); // 10 rows, 10 columns, tile size of 50x50
-      Rectangle7.Visible := false;
-      gameover           := false;
+  procedure TfrmMain.recQuitClick( Sender : TObject );
+    begin
+      gameover := True;
+    end;
+
+  procedure TfrmMain.recRightClick( Sender : TObject );
+    begin
+      if GameGrid.GetTileType( MyCharacter.X + 1, MyCharacter.Y ) <> 'Wall'
+      then
+        begin
+          MyCharacter.X := MyCharacter.X + 1;
+        end;
+    end;
+
+  procedure TfrmMain.Rectangle1Click( Sender : TObject );
+    begin
+      CreateGameGrid;
+      ShowRoom;
+      ShowGameGrid;
+      ShowCharacter;
+    end;
+
+  procedure TfrmMain.Rectangle8Click( Sender : TObject );
+    begin
+      ClassRoom.Show;
+    end;
+
+  procedure TfrmMain.recUPClick( Sender : TObject );
+    begin
+      if GameGrid.GetTileType( MyCharacter.X, MyCharacter.Y - 1 ) <> 'Wall'
+      then
+        begin
+          MyCharacter.Y := MyCharacter.Y - 1;
+        end;
+
+      CheckCollision; // Check collision after moving up
     end;
 
   procedure TfrmMain.ShowCharacter;
@@ -333,54 +357,36 @@ implementation
         end;
     end;
 
-  procedure TfrmMain.Rectangle1Click( Sender : TObject );
+  procedure TfrmMain.ShowPathFound( lPath : tList< TPoint > );
+    var
+      i : integer;
+      p : TPoint;
     begin
-      CreateGameGrid;
-      ShowRoom;
-      ShowGameGrid;
-      ShowCharacter;
+      p     := TPoint.Create( 0, 0 );
+      for i := 0 to lPath.Count - 1 do
+        begin
+          p.X := lPath[ i ].X;
+          p.Y := lPath[ i ].Y;
+          // Update character position
+          MyCharacter.X := p.X;
+          MyCharacter.Y := p.Y;
+
+          // Update the grid
+          GameGrid.UpdateTileType( MyCharacter.X, MyCharacter.Y, 'Character' );
+          Sleep( 100 ); // Optional delay for smooth animation
+          Application.ProcessMessages; // Ensure UI updates in real-time
+        end;
     end;
 
-  procedure TfrmMain.recQuitClick( Sender : TObject );
+  procedure TfrmMain.ShowRoom;
     begin
-      gameover := True;
-    end;
-
-  procedure TfrmMain.recUPClick( Sender : TObject );
-    begin
-
-      if GameGrid.GetTileType( MyCharacter.X, MyCharacter.Y - 1 ) <> 'Wall'
-      then
-        MyCharacter.Y := MyCharacter.Y - 1;
-      CheckCollision; // Check collision after moving up
-
-    end;
-
-  procedure TfrmMain.recDownClick( Sender : TObject );
-    begin
-      if GameGrid.GetTileType( MyCharacter.X, MyCharacter.Y + 1 ) <> 'Wall'
-      then
-        MyCharacter.Y := MyCharacter.Y + 1;
-    end;
-
-  procedure TfrmMain.recRightClick( Sender : TObject );
-    begin
-
-      if GameGrid.GetTileType( MyCharacter.X + 1, MyCharacter.Y ) <> 'Wall'
-      then
-        MyCharacter.X := MyCharacter.X + 1;
-    end;
-
-  procedure TfrmMain.recLeftClick( Sender : TObject );
-    begin
-      if GameGrid.GetTileType( MyCharacter.X - 1, MyCharacter.Y ) <> 'Wall'
-      then
-        MyCharacter.X := MyCharacter.X - 1;
-    end;
-
-  procedure TfrmMain.Rectangle8Click( Sender : TObject );
-    begin
-      ClassRoom.Show;
+      recRoom_1.Visible := false;
+      // Create a new rectangle to display in front of the grid
+      recRoom_1.Width      := 225; // Set width of rectangle
+      recRoom_1.Height     := 245; // Set height of rectangle
+      recRoom_1.Position.X := 88; // Set X position (adjust as needed)
+      recRoom_1.Position.Y := 110; // Set Y position (adjust as needed)
+      recRoom_1.BringToFront; // Bring rectangle to the front of all other controls
     end;
 
 end.

@@ -3,15 +3,17 @@ unit CL_Grid;
 interface
 
   uses
-    System.SysUtils,
-    System.Types,
-    System.UITypes,
+    // Windows Units
+    // Delphi Units
+    FMX.Controls,
+    FMX.Graphics,
+    FMX.Objects,
+    FMX.Types,
     System.Classes,
     System.Generics.Collections,
-    FMX.Graphics,
-    FMX.Types,
-    FMX.Controls,
-    FMX.Objects;
+    System.SysUtils,
+    System.Types,
+    System.UITypes;
 
   type
     // A single grid tile, representing an element in the map
@@ -20,26 +22,26 @@ interface
         FTileRect : TRectangle; // Visual representation of the tile
         FTileType : string; // Type of the tile (e.g., 'Grass', 'Water', 'Wall')
       public
+        constructor Create( ATileType : string; APosition : TPointF; ASize : Single );
         property TileRect : TRectangle read FTileRect;
         property TileType : string read FTileType write FTileType;
-        constructor Create( ATileType : string; APosition : TPointF; ASize : Single );
     end;
 
     // The grid, consisting of multiple tiles
     TGameGrid = class( TObject )
       private
-        FRows          : Integer; // Number of rows in the grid
         FCols          : Integer; // Number of columns in the grid
-        FTileSize      : Single; // Size of each tile
         FGridTiles     : TObjectList< TGridTile >; // List of all grid tiles
         FParentControl : TControl; // Parent control to hold the grid (e.g., Form or a Panel)
+        FRows          : Integer; // Number of rows in the grid
+        FTileSize      : Single; // Size of each tile
       public
-        procedure CreateGrid;
         constructor Create( AParent : TControl; ARows, ACols : Integer; ATileSize : Single );
         destructor Destroy; override;
+        procedure CreateGrid;
+        function GetTileType( X, Y : Integer ) : string;
         procedure RenderGrid; // Render the grid on the parent control
         procedure UpdateTileType( X, Y : Integer; ATileType : string ); // Update tile type at a specific grid position
-        function GetTileType( X, Y : Integer ) : string;
     end;
 
 implementation
@@ -62,24 +64,38 @@ implementation
       // Load images or colors based on tile type
       if ATileType = 'Floor'
       then
-        FTileRect.Fill.Color := TAlphaColors.Grey
+        begin
+          FTileRect.Fill.Color := TAlphaColors.Grey;
+        end
       else if ATileType = 'Wall'
       then
-        FTileRect.Fill.Color := TAlphaColors.Black
+        begin
+          FTileRect.Fill.Color := TAlphaColors.Black;
+        end
       else if ATileType = 'Table'
       then
-        FTileRect.Fill.Color := TAlphaColors.Orange
+        begin
+          FTileRect.Fill.Color := TAlphaColors.Orange;
+        end
       else if ATileType = 'Teacher'
       then
-        FTileRect.Fill.Color := TAlphaColors.Cyan
+        begin
+          FTileRect.Fill.Color := TAlphaColors.Cyan;
+        end
       else if ATileType = 'Door'
       then
-        FTileRect.Fill.Color := TAlphaColors.Blue
+        begin
+          FTileRect.Fill.Color := TAlphaColors.Blue;
+        end
       else if ATileType = 'Character'
       then
-        FTileRect.Fill.Color := TAlphaColors.Yellow
+        begin
+          FTileRect.Fill.Color := TAlphaColors.Yellow;
+        end
       else
-        FTileRect.Fill.Color := TAlphaColors.White; // Default color for unclassified tiles
+        begin
+          FTileRect.Fill.Color := TAlphaColors.White; // Default color for unclassified tiles
+        end;
     end;
 
   { TGameGrid }
@@ -100,21 +116,10 @@ implementation
       inherited;
     end;
 
-  function TGameGrid.GetTileType( X, Y : Integer ) : string;
-    var
-      TileIndex : Integer;
-    begin
-      TileIndex := ( Y * FCols ) + X;
-      if ( TileIndex >= 0 ) and ( TileIndex < FGridTiles.Count )
-      then
-        Result := FGridTiles[ TileIndex ].TileType
-      else
-        Result := '';
-    end;
-
   procedure TGameGrid.CreateGrid;
     var
-      Row, Col : Integer;
+      Row      : Integer;
+      Col      : Integer;
       Position : TPointF;
       Tile     : TGridTile;
     begin
@@ -129,6 +134,22 @@ implementation
               FGridTiles.Add( Tile );
               FParentControl.AddObject( Tile.TileRect ); // Add tile to the parent visual control
             end;
+        end;
+    end;
+
+  function TGameGrid.GetTileType( X, Y : Integer ) : string;
+    var
+      TileIndex : Integer;
+    begin
+      TileIndex := ( Y * FCols ) + X;
+      if ( TileIndex >= 0 ) and ( TileIndex < FGridTiles.Count )
+      then
+        begin
+          Result := FGridTiles[ TileIndex ].TileType;
+        end
+      else
+        begin
+          Result := EmptyStr;
         end;
     end;
 
